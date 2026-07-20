@@ -1,4 +1,7 @@
 # Hindsight
+
+[![CI](https://github.com/ShayManor/Hindsight/actions/workflows/ci.yml/badge.svg)](https://github.com/ShayManor/Hindsight/actions/workflows/ci.yml)
+
 Env-conditioned stack-trace retrieval for agent debugging, over MCP.
 
 Agents search a shared commons of resolved, environment-conditioned errors, try the
@@ -29,4 +32,4 @@ and reproducible: pinned embedder + `index_version` on every result.
 
 ## Development
 
-100% test coverage is enforced (`pytest` runs the gate). CI runs lint + tests on every push to `main`.
+100% test coverage is enforced (`pytest` runs the gate).
