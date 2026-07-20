@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hindsight"
+version = "0.1.0"
+description = "Env-conditioned stack-trace retrieval for agent debugging"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.10",
+    "sqlite-vec>=0.1.9",
+    "mcp>=1.28",
+    "flask>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=hindsight --cov-report=term-missing --cov-fail-under=100"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["hindsight"]
+
+[tool.ruff]
+line-length = 100
