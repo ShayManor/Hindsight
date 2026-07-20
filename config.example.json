@@ -19,10 +19,10 @@
   "_comment_repos": "Edit this list freely. Format: 'owner/repo'.",
   "repos": [
     "dusty-nv/jetson-containers",
-    "dusty-nv/jetson-inference",
+    "ultralytics/ultralytics",
     "cli/cli",
     "BurntSushi/ripgrep",
-    "sharkdp/bat",
+    "vitejs/vite",
     "fastapi/fastapi",
     "gin-gonic/gin",
     "expressjs/express"

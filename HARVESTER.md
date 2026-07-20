@@ -36,7 +36,7 @@ python3 harvest.py
 python3 harvest.py --dry-run
 
 # Override the repo list ad hoc (repeatable)
-python3 harvest.py --repo cli/cli --repo sharkdp/bat
+python3 harvest.py --repo cli/cli --repo BurntSushi/ripgrep
 ```
 
 Standard library only — no `pip install`. Python 3.7+.

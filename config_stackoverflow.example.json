@@ -23,7 +23,7 @@
 
   "_comment_tags": "Scoping = tags (the repo-list analog). Each tag is crawled separately; questions are deduped by global question_id on disk. Edit freely.",
   "tags": [
-    "nvidia-jetson",
+    "opencv",
     "cuda",
     "pytorch",
     "rust",
