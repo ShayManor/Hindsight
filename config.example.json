@@ -25,6 +25,13 @@
     "vitejs/vite",
     "fastapi/fastapi",
     "gin-gonic/gin",
-    "expressjs/express"
+    "expressjs/express",
+    "pythops/jetson-image",
+    "Dao-AILab/flash-attention",
+    "NVIDIA/cutlass",
+    "NVIDIA/cuda-quantum",
+    "jax-ml/jax",
+    "tensorflow/tensorflow",
+    "pytorch/pytorch"
   ]
 }
