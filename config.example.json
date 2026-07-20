@@ -1,0 +1,37 @@
+{
+  "_comment": "Copy this file to config.json and edit. GITHUB_TOKEN must be set in the environment (never put the token in this file).",
+
+  "output_dir": "data",
+
+  "_comment_window": "The recency window. 'updated_since_days' feeds the API 'since' param (filters on updated_at). 'closed_within_days' is a client-side filter on closed_at. ALL raw timestamps are stored regardless, so you can widen these later WITHOUT re-crawling. Set either to null to disable that bound.",
+  "updated_since_days": 365,
+  "closed_within_days": 365,
+
+  "_comment_targeting": "The /issues endpoint returns pull requests too (GitHub models PRs as issues). Target is issues, so PRs are skipped by default. Set include_pull_requests=true to store them raw as well.",
+  "include_pull_requests": false,
+
+  "_comment_rate": "Rate-limit + retry tuning. rate_limit_buffer: pause when remaining requests drop to/below this. request_delay_seconds: polite delay between requests (0 is fine when authenticated).",
+  "per_page": 100,
+  "request_delay_seconds": 0.0,
+  "rate_limit_buffer": 75,
+  "max_retries": 6,
+
+  "_comment_repos": "Edit this list freely. Format: 'owner/repo'.",
+  "repos": [
+    "dusty-nv/jetson-containers",
+    "ultralytics/ultralytics",
+    "cli/cli",
+    "BurntSushi/ripgrep",
+    "vitejs/vite",
+    "fastapi/fastapi",
+    "gin-gonic/gin",
+    "expressjs/express",
+    "pythops/jetson-image",
+    "Dao-AILab/flash-attention",
+    "NVIDIA/cutlass",
+    "NVIDIA/cuda-quantum",
+    "jax-ml/jax",
+    "tensorflow/tensorflow",
+    "pytorch/pytorch"
+  ]
+}

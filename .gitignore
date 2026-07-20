@@ -222,3 +222,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Hindsight harvester
+# (git does not support inline comments in .gitignore — keep patterns bare)
+# raw harvested output
+data/
+# local config copied from config.example.json
+config.json
+# raw harvested SO output
+data_stackoverflow/
+# local SO config copied from config_stackoverflow.example.json
+config_stackoverflow.json
