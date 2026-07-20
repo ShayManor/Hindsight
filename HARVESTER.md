@@ -1,4 +1,15 @@
-# Hindsight — Raw GitHub Issues Harvester
+# Hindsight — Raw Harvesters
+
+Two source harvesters, same design principle (**pull raw and complete, transform
+later**) and same conventions (thin `_meta` container over verbatim payloads,
+per-source checkpoints, on-disk dedup, rate-limit safety, resumable):
+
+- **GitHub Issues** — `harvest.py` (see below)
+- **Stack Overflow** — `harvest_stackoverflow.py` (see [Stack Overflow](#stack-overflow-harvester) section)
+
+---
+
+# Raw GitHub Issues Harvester
 
 Pulls **closed** GitHub issues — plus their **full comments** and **full timeline** —
 from a configurable list of repos and writes the **raw** GitHub API payloads to
@@ -110,3 +121,90 @@ GraphQL could fetch issue + timeline + closing-PR in fewer round-trips (and has 
 purpose-built `closedByPullRequestsReferences`), but it forces field selection up
 front and has a harder-to-reason-about point-based rate limit. Revisit if request
 volume becomes the bottleneck.
+
+---
+
+# Stack Overflow harvester
+
+`harvest_stackoverflow.py` pulls **questions** — plus their full **answers**,
+**comments**, and **timeline** — for a list of tags from the Stack Exchange API
+and writes the **raw** payloads to disk, one record per question.
+
+The Stack Overflow analog of "issue closed by a merged PR" is a **question with an
+accepted answer** — a pre-verified symptom→fix pair. As on the GitHub side, that
+signal is **not extracted**; it's preserved raw in the question's
+`accepted_answer_id` and each answer's `is_accepted` flag.
+
+## Quick start
+
+```bash
+export STACK_APP_KEY=...          # optional but strongly recommended (quota: 300/day -> 10,000/day)
+cp config_stackoverflow.example.json config_stackoverflow.json
+python3 harvest_stackoverflow.py
+python3 harvest_stackoverflow.py --dry-run
+python3 harvest_stackoverflow.py --tag python --tag docker   # override tags
+```
+
+## Output layout
+
+```
+data_stackoverflow/
+  _checkpoints/
+    tag__cuda.json              # per-tag resume state (window + completed slices)
+  questions/
+    0075107329.json            # one raw record per question (keyed by global question_id)
+```
+
+Each `questions/NNNNNNNNNN.json`:
+
+```json
+{
+  "_meta": { "site": "stackoverflow", "question_id": 75107329, "surfaced_by_tag": "fastapi",
+             "counts": { "answers": 2, "answer_comments": 1, "timeline_events": 24 }, ... },
+  "question":          { ...verbatim question object, with body... },
+  "answers":           [ ...verbatim answer objects, with bodies... ],
+  "question_comments": [ ...verbatim comments, with bodies... ],
+  "answer_comments":   [ ...verbatim comments, with bodies... ],
+  "timeline":          [ ...verbatim question timeline events... ]
+}
+```
+
+Questions are keyed by **global `question_id`**, so a question surfaced under two
+tags is fetched once (on-disk presence dedups).
+
+## Config (`config_stackoverflow.json`)
+
+| Key | Meaning |
+|-----|---------|
+| `tags` | Tags to crawl (the repo-list analog). Each crawled separately. |
+| `output_dir` | Root output directory (default `data_stackoverflow`). |
+| `site` | Stack Exchange site (default `stackoverflow`). |
+| `window_days` | Recency window size. |
+| `date_field` | `activity` (touched recently) or `creation` (asked recently). |
+| `window_slice_days` | Sub-window size; keeps each query under the 25k deep-paging cap. |
+| `min_answers` | Minimum answer count (search/advanced `answers`; `0` includes unanswered). |
+| `accepted_only` | `true` restricts to questions with an accepted answer. Default `false` (capture all answered, identify verified later). |
+| `pagesize` | Page size (max 100). |
+| `min_quota_remaining` | Stop a crawl when daily quota drops to/below this. |
+| `max_retries` | Retry budget for throttles / 5xx / network errors. |
+
+## API notes
+
+- **Bodies require `filter=withbody`** — the default API omits question/answer/comment
+  text. Used on every call.
+- **Responses are gzip-encoded** and decompressed explicitly.
+- **App key** (`STACK_APP_KEY` env) raises quota from 300/day to 10,000/day. Optional
+  `STACK_ACCESS_TOKEN` for authenticated calls (not needed for public read).
+- The API **`backoff`** field is a mandatory wait and is always honored; `quota_remaining`
+  is tracked and a crawl stops cleanly (checkpointed) when it runs low or the daily quota
+  resets are needed.
+- **Deep-paging cap (25,000 results/query):** the window is sliced into sub-windows so a
+  busy tag never silently truncates; a warning is logged if a slice ever hits the cap.
+
+## Future option (not built)
+
+Per-question requests could be collapsed by building a **custom filter** (via
+`/filters/create`) that inlines answers + comments into the question response,
+cutting calls per question. `withbody` + explicit sub-resource fetches were chosen
+for faithful, self-contained raw payloads (mirrors the REST-over-GraphQL choice on
+the GitHub side). Revisit if quota becomes the bottleneck.

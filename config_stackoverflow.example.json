@@ -1,0 +1,35 @@
+{
+  "_comment": "Copy to config_stackoverflow.json and edit. Set STACK_APP_KEY in the environment for the 10,000/day quota (without a key you get only 300/day). Never put the key in this file.",
+
+  "output_dir": "data_stackoverflow",
+  "site": "stackoverflow",
+
+  "_comment_window": "Recency window. 'window_days' = how far back. 'date_field' picks whether the window filters on 'activity' (question touched recently, e.g. an answer accepted lately on an older question) or 'creation' (question asked recently). ALL raw timestamps are stored, so widening later needs no re-crawl.",
+  "window_days": 365,
+  "date_field": "activity",
+
+  "_comment_slice": "The window is sliced into sub-windows to stay under the API's 25,000-results-per-query deep-paging cap. Narrow this if a busy tag logs a cap warning.",
+  "window_slice_days": 30,
+
+  "_comment_targeting": "min_answers feeds search/advanced 'answers' (minimum answer count; 0 includes unanswered). accepted_only=true restricts to questions with an accepted answer (the pre-verified symptom->fix pairs). Default mirrors the GitHub harvester: capture all answered questions raw, identify verified fixes later from raw accepted_answer_id / is_accepted.",
+  "min_answers": 1,
+  "accepted_only": false,
+
+  "_comment_rate": "Quota + retry tuning. min_quota_remaining: stop a tag crawl when the daily quota drops to/below this. The API 'backoff' field is always honored regardless.",
+  "pagesize": 100,
+  "request_delay_seconds": 0.0,
+  "min_quota_remaining": 20,
+  "max_retries": 6,
+
+  "_comment_tags": "Scoping = tags (the repo-list analog). Each tag is crawled separately; questions are deduped by global question_id on disk. Edit freely.",
+  "tags": [
+    "nvidia-jetson",
+    "cuda",
+    "pytorch",
+    "rust",
+    "go",
+    "fastapi",
+    "express",
+    "docker"
+  ]
+}

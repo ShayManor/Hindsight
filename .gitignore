@@ -220,3 +220,5 @@ __marimo__/
 # Hindsight harvester
 data/            # raw harvested output
 config.json      # local config (copied from config.example.json)
+data_stackoverflow/          # raw harvested SO output
+config_stackoverflow.json    # local SO config (copied from example)
