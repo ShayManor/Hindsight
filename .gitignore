@@ -206,6 +206,12 @@ tempCodeRunnerFile.py
 # Ruff stuff:
 .ruff_cache/
 
+# Working docs / specs (not committed; only README.md is)
+docs/superpowers/
+.superpowers/
+CLAUDE.md
+.idea/
+
 # PyPI configuration file
 .pypirc
 
