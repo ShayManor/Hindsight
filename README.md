@@ -1,0 +1,2 @@
+# Hindsight
+Agent debugging MCP
