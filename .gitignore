@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Hindsight harvester
+data/            # raw harvested output
+config.json      # local config (copied from config.example.json)
